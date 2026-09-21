@@ -34,11 +34,11 @@ const links = Object.entries(entry.data.links).filter(
   type="project"
   tags={entry.data.tags}
 >
-  <article>
-    <header>
+  <article class="prose-page article-page">
+    <header class="article-heading">
       <h1>{entry.data.title}</h1>
-      <p>{entry.data.description}</p>
-      <p>{entry.data.year}</p>
+      <p class="article-heading__lede">{entry.data.description}</p>
+      <p class="article-heading__meta">{entry.data.year}</p>
     </header>
     {
       entry.data.image && (
@@ -49,10 +49,12 @@ const links = Object.entries(entry.data.links).filter(
         />
       )
     }
-    <Content />
+    <div class="prose">
+      <Content />
+    </div>
     {
       links.length > 0 && (
-        <footer>
+        <footer class="article-footer">
           <h2>Links</h2>
           <ul>
             {links.map(([label, href]) => (

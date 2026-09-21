@@ -1,5 +1,6 @@
 ---
-import FormattedDate from '@/components/FormattedDate.astro';
+import BlogList from '@/components/BlogList.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
 import site from '@/config/site';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getPosts, getProjects } from '@/lib/content';
@@ -8,62 +9,91 @@ const [posts, projects] = await Promise.all([getPosts(), getProjects()]);
 const featuredPosts = posts.filter(({ data }) => data.featured).slice(0, 3);
 const featuredProjects = projects
   .filter(({ data }) => data.featured)
-  .slice(0, 3);
+  .slice(0, 4);
+const socialLinks = site.author.links.filter(
+  ({ href }) => !href.startsWith('mailto:'),
+);
 ---
 
 <BaseLayout>
-  <h1>{site.name}</h1>
-  <p>{site.description}</p>
+  <div class="home">
+    <section class="home-intro" aria-label="Introduction">
+      <h1 class="sr-only">{site.name}</h1>
+      <p>{site.description}</p>
+    </section>
 
-  <section aria-labelledby="featured-projects">
-    <h2 id="featured-projects">Selected projects</h2>
-    {
-      featuredProjects.length > 0 ? (
-        <ul>
-          {featuredProjects.map((project) => (
-            <li>
-              <article>
-                <h3>
-                  <a href={`/projects/${project.id}/`}>{project.data.title}</a>
-                </h3>
-                <p>{project.data.description}</p>
-                <p>{project.data.year}</p>
-              </article>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No featured projects yet.</p>
-      )
-    }
-    <p>
-      <a href="/projects/">All projects</a>
-    </p>
-  </section>
+    <section class="home-section" aria-labelledby="selected-projects">
+      <h2 id="selected-projects">Selected Projects</h2>
+      {
+        featuredProjects.length > 0 ? (
+          <ul class="project-grid">
+            {featuredProjects.map((project, index) => (
+              <ProjectCard project={project} index={index} />
+            ))}
+          </ul>
+        ) : (
+          <p class="empty-state">No featured projects yet.</p>
+        )
+      }
+    </section>
 
-  <section aria-labelledby="recent-posts">
-    <h2 id="recent-posts">Recent writing</h2>
-    {
-      featuredPosts.length > 0 ? (
-        <ul>
-          {featuredPosts.map((post) => (
-            <li>
-              <article>
-                <h3>
-                  <a href={`/posts/${post.id}/`}>{post.data.title}</a>
-                </h3>
-                <p>{post.data.description}</p>
-                <FormattedDate date={post.data.publishedAt} />
-              </article>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No featured posts yet.</p>
-      )
-    }
-    <p>
-      <a href="/posts/">All posts</a>
-    </p>
-  </section>
+    <section class="home-section" aria-labelledby="work-experience">
+      <h2 id="work-experience">Work Experience</h2>
+      <div class="experience-list">
+        {
+          site.experience.map((job) => (
+            <a class="experience-row" href={job.href} data-spotlight>
+              <span class="experience-row__spotlight" aria-hidden="true" />
+              <div class="experience-row__content">
+                <div>
+                  <h3>{job.role}</h3>
+                  <p>{job.company}</p>
+                </div>
+                <p class="experience-row__dates">
+                  {job.start} – {job.end}
+                </p>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="home-section" aria-labelledby="blog-posts">
+      <h2 id="blog-posts">Blog</h2>
+      {
+        featuredPosts.length > 0 ? (
+          <BlogList posts={featuredPosts} />
+        ) : (
+          <p class="empty-state">No featured posts yet.</p>
+        )
+      }
+    </section>
+
+    <section class="home-section connect" aria-labelledby="connect">
+      <h2 id="connect">Connect</h2>
+      {
+        site.author.email && (
+          <p>
+            Feel free to contact me at{' '}
+            <a href={`mailto:${site.author.email}`}>{site.author.email}</a>.
+          </p>
+        )
+      }
+      {
+        socialLinks.length > 0 && (
+          <div class="social-links">
+            {socialLinks.map((item) => (
+              <a href={item.href} data-magnetic>
+                {item.label}
+                <svg aria-hidden="true" viewBox="0 0 15 15">
+                  <path d="M3.65 11.35a.5.5 0 0 1 0-.7L10.29 4H6a.5.5 0 0 1 0-1h5.5a.5.5 0 0 1 .5.5V9a.5.5 0 0 1-1 0V4.71l-6.65 6.64a.5.5 0 0 1-.7 0Z" />
+                </svg>
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </section>
+  </div>
 </BaseLayout>

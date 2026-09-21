@@ -1,0 +1,83 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ContentImage from '@/components/ContentImage.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  index: number;
+}
+
+const { project, index } = Astro.props;
+const dialogId = `project-preview-${project.id.replaceAll('/', '-')}`;
+const number = String(index + 1).padStart(2, '0');
+---
+
+<li class="project-card">
+  <button
+    class="project-card__media-frame"
+    type="button"
+    data-dialog-trigger={dialogId}
+    aria-haspopup="dialog"
+    aria-controls={dialogId}
+    aria-label={`Preview ${project.data.title}`}
+  >
+    <span class="project-card__media">
+      {
+        project.data.image ? (
+          <ContentImage
+            src={project.data.image}
+            alt={project.data.imageAlt ?? ''}
+            widths={[400, 608]}
+            sizes="(min-width: 640px) 286px, calc(100vw - 40px)"
+          />
+        ) : (
+          <span class="project-card__placeholder" aria-hidden="true">
+            <span>{number}</span>
+            <span>{project.data.title}</span>
+          </span>
+        )
+      }
+    </span>
+  </button>
+  <div class="project-card__copy">
+    <a href={`/projects/${project.id}/`}>{project.data.title}</a>
+    <p>{project.data.description}</p>
+  </div>
+
+  <dialog
+    class="project-dialog"
+    id={dialogId}
+    aria-label={`${project.data.title} preview`}
+  >
+    <div class="project-dialog__frame">
+      <div class="project-dialog__media">
+        {
+          project.data.image ? (
+            <ContentImage
+              src={project.data.image}
+              alt={project.data.imageAlt ?? ''}
+              widths={[768, 1200]}
+              sizes="min(90vw, 1120px)"
+              loading="eager"
+            />
+          ) : (
+            <div class="project-card__placeholder" aria-hidden="true">
+              <span>{number}</span>
+              <span>{project.data.title}</span>
+            </div>
+          )
+        }
+      </div>
+    </div>
+    <button
+      class="project-dialog__close"
+      type="button"
+      data-dialog-close
+      aria-label="Close preview"
+    >
+      <svg aria-hidden="true" viewBox="0 0 24 24"
+        ><path d="m6 6 12 12M18 6 6 18"></path></svg
+      >
+    </button>
+  </dialog>
+</li>

@@ -7,7 +7,11 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
   description="The requested page could not be found."
   noIndex
 >
-  <h1>Page not found</h1>
-  <p>The requested page does not exist.</p>
-  <p><a href="/">Return home</a></p>
+  <section class="not-found">
+    <h1>Page not found</h1>
+    <p>The requested page does not exist or may have moved.</p>
+    <a class="text-link" href="/"
+      >Return home <span aria-hidden="true">↗</span></a
+    >
+  </section>
 </BaseLayout>

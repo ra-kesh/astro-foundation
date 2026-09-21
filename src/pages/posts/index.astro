@@ -1,5 +1,5 @@
 ---
-import FormattedDate from '@/components/FormattedDate.astro';
+import BlogList from '@/components/BlogList.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getPosts } from '@/lib/content';
 
@@ -7,24 +7,14 @@ const posts = await getPosts();
 ---
 
 <BaseLayout title="Posts" description="Published notes and articles.">
-  <h1>Posts</h1>
-  {
-    posts.length > 0 ? (
-      <ol>
-        {posts.map((post) => (
-          <li>
-            <article>
-              <h2>
-                <a href={`/posts/${post.id}/`}>{post.data.title}</a>
-              </h2>
-              <p>{post.data.description}</p>
-              <FormattedDate date={post.data.publishedAt} />
-            </article>
-          </li>
-        ))}
-      </ol>
-    ) : (
-      <p>No posts published.</p>
-    )
-  }
+  <section class="collection-page" aria-labelledby="posts-title">
+    <h1 id="posts-title">Blog</h1>
+    {
+      posts.length > 0 ? (
+        <BlogList posts={posts} />
+      ) : (
+        <p class="empty-state">No posts published.</p>
+      )
+    }
+  </section>
 </BaseLayout>

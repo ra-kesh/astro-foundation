@@ -1,25 +1,16 @@
 ---
 import site from '@/config/site';
-
-const currentPath = Astro.url.pathname;
 ---
 
-<header>
-  <p><a href="/">{site.name}</a></p>
-  <nav aria-label="Primary navigation">
-    <ul>
-      {
-        site.navigation.map((item) => (
-          <li>
-            <a
-              href={item.href}
-              aria-current={currentPath === item.href ? 'page' : undefined}
-            >
-              {item.label}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </nav>
+<header class="site-header">
+  <a class="site-name" href="/">{site.author.name}</a>
+  <p class="role-effect" aria-label={site.author.role}>
+    {
+      [...site.author.role].map((character, index) => (
+        <span aria-hidden="true" style={`--character-index: ${index}`}>
+          {character === ' ' ? '\u00a0' : character}
+        </span>
+      ))
+    }
+  </p>
 </header>

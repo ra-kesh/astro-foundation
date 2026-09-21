@@ -17,14 +17,27 @@ const head = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <script is:inline>
+      (() => {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'light' || theme === 'dark') {
+          document.documentElement.dataset.theme = theme;
+        }
+      })();
+    </script>
     <Head {...head} />
   </head>
   <body>
-    <a href="#main-content">Skip to content</a>
-    <SiteHeader />
-    <main id="main-content">
-      <slot />
-    </main>
-    <SiteFooter />
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="site-shell">
+      <SiteHeader />
+      <main class="site-main" id="main-content">
+        <slot />
+      </main>
+      <SiteFooter />
+    </div>
+    <script>
+      import '@/scripts/interactions';
+    </script>
   </body>
 </html>

@@ -1,0 +1,21 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  posts: CollectionEntry<'posts'>[];
+}
+
+const { posts } = Astro.props;
+---
+
+<div class="blog-list" data-shared-highlight>
+  <span class="shared-highlight" aria-hidden="true"></span>
+  {
+    posts.map((post) => (
+      <a class="blog-row" href={`/posts/${post.id}/`} data-highlight-item>
+        <h3>{post.data.title}</h3>
+        <p>{post.data.description}</p>
+      </a>
+    ))
+  }
+</div>

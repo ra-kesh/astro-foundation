@@ -25,11 +25,13 @@ const { Content } = await render(entry);
   image={entry.data.seo?.image}
   noIndex={entry.data.seo?.noIndex}
 >
-  <article>
-    <header>
+  <article class="prose-page">
+    <header class="article-heading">
       <h1>{entry.data.title}</h1>
-      <p>{entry.data.description}</p>
+      <p class="article-heading__lede">{entry.data.description}</p>
     </header>
-    <Content />
+    <div class="prose">
+      <Content />
+    </div>
   </article>
 </BaseLayout>

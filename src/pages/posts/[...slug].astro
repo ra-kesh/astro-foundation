@@ -1,5 +1,6 @@
 ---
 import { render, type CollectionEntry } from 'astro:content';
+import ArticleTools from '@/components/ArticleTools.astro';
 import ContentImage from '@/components/ContentImage.astro';
 import FormattedDate from '@/components/FormattedDate.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
@@ -34,18 +35,21 @@ const image = entry.data.seo?.image ?? `/og/posts/${entry.id}.png`;
   updatedAt={entry.data.updatedAt}
   tags={entry.data.tags}
 >
-  <article>
-    <header>
+  <ArticleTools />
+  <article class="prose-page article-page">
+    <header class="article-heading">
       <h1>{entry.data.title}</h1>
-      <p>{entry.data.description}</p>
-      <p>Published <FormattedDate date={entry.data.publishedAt} /></p>
-      {
-        entry.data.updatedAt && (
-          <p>
-            Updated <FormattedDate date={entry.data.updatedAt} />
-          </p>
-        )
-      }
+      <p class="article-heading__lede">{entry.data.description}</p>
+      <div class="article-heading__meta">
+        <p>Published <FormattedDate date={entry.data.publishedAt} /></p>
+        {
+          entry.data.updatedAt && (
+            <p>
+              Updated <FormattedDate date={entry.data.updatedAt} />
+            </p>
+          )
+        }
+      </div>
     </header>
     {
       entry.data.image && (
@@ -56,10 +60,12 @@ const image = entry.data.seo?.image ?? `/og/posts/${entry.id}.png`;
         />
       )
     }
-    <Content />
+    <div class="prose">
+      <Content />
+    </div>
     {
       entry.data.tags.length > 0 && (
-        <footer>
+        <footer class="article-footer">
           <p>Tagged: {entry.data.tags.join(', ')}</p>
         </footer>
       )
