@@ -1,0 +1,10 @@
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+/*
+ * Tailwind is available without Preflight so this starter renders with the
+ * browser's native element styles. Add a reset, tokens, components, or a full
+ * design system here when the product has a visual direction.
+ */

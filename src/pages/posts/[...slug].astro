@@ -1,0 +1,68 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import ContentImage from '@/components/ContentImage.astro';
+import FormattedDate from '@/components/FormattedDate.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getPosts } from '@/lib/content';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'posts'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const title = entry.data.seo?.title ?? entry.data.title;
+const description = entry.data.seo?.description ?? entry.data.description;
+const image = entry.data.seo?.image ?? `/og/posts/${entry.id}.png`;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  image={image}
+  noIndex={entry.data.seo?.noIndex}
+  type="article"
+  publishedAt={entry.data.publishedAt}
+  updatedAt={entry.data.updatedAt}
+  tags={entry.data.tags}
+>
+  <article>
+    <header>
+      <h1>{entry.data.title}</h1>
+      <p>{entry.data.description}</p>
+      <p>Published <FormattedDate date={entry.data.publishedAt} /></p>
+      {
+        entry.data.updatedAt && (
+          <p>
+            Updated <FormattedDate date={entry.data.updatedAt} />
+          </p>
+        )
+      }
+    </header>
+    {
+      entry.data.image && (
+        <ContentImage
+          src={entry.data.image}
+          alt={entry.data.imageAlt ?? ''}
+          loading="eager"
+        />
+      )
+    }
+    <Content />
+    {
+      entry.data.tags.length > 0 && (
+        <footer>
+          <p>Tagged: {entry.data.tags.join(', ')}</p>
+        </footer>
+      )
+    }
+  </article>
+</BaseLayout>

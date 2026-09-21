@@ -1,0 +1,30 @@
+---
+import Head, { type Props as HeadProps } from '@/components/Head.astro';
+import SiteFooter from '@/components/SiteFooter.astro';
+import SiteHeader from '@/components/SiteHeader.astro';
+import site from '@/config/site';
+import '@/styles/global.css';
+
+export type Props = HeadProps;
+
+const head = Astro.props;
+---
+
+<!doctype html>
+<html lang={site.language}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <Head {...head} />
+  </head>
+  <body>
+    <a href="#main-content">Skip to content</a>
+    <SiteHeader />
+    <main id="main-content">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>

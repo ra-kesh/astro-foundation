@@ -1,0 +1,29 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getProjects } from '@/lib/content';
+
+const projects = await getProjects();
+---
+
+<BaseLayout title="Projects" description="Selected projects and case studies.">
+  <h1>Projects</h1>
+  {
+    projects.length > 0 ? (
+      <ol>
+        {projects.map((project) => (
+          <li>
+            <article>
+              <h2>
+                <a href={`/projects/${project.id}/`}>{project.data.title}</a>
+              </h2>
+              <p>{project.data.description}</p>
+              <p>{project.data.year}</p>
+            </article>
+          </li>
+        ))}
+      </ol>
+    ) : (
+      <p>No projects published.</p>
+    )
+  }
+</BaseLayout>

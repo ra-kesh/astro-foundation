@@ -1,0 +1,68 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import ContentImage from '@/components/ContentImage.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getProjects } from '@/lib/content';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'projects'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const title = entry.data.seo?.title ?? entry.data.title;
+const description = entry.data.seo?.description ?? entry.data.description;
+const image = entry.data.seo?.image ?? `/og/projects/${entry.id}.png`;
+const links = Object.entries(entry.data.links).filter(
+  (pair): pair is [string, string] => Boolean(pair[1]),
+);
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  image={image}
+  noIndex={entry.data.seo?.noIndex}
+  type="project"
+  tags={entry.data.tags}
+>
+  <article>
+    <header>
+      <h1>{entry.data.title}</h1>
+      <p>{entry.data.description}</p>
+      <p>{entry.data.year}</p>
+    </header>
+    {
+      entry.data.image && (
+        <ContentImage
+          src={entry.data.image}
+          alt={entry.data.imageAlt ?? ''}
+          loading="eager"
+        />
+      )
+    }
+    <Content />
+    {
+      links.length > 0 && (
+        <footer>
+          <h2>Links</h2>
+          <ul>
+            {links.map(([label, href]) => (
+              <li>
+                <a href={href}>{label}</a>
+              </li>
+            ))}
+          </ul>
+        </footer>
+      )
+    }
+  </article>
+</BaseLayout>

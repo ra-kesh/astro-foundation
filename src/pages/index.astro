@@ -1,0 +1,69 @@
+---
+import FormattedDate from '@/components/FormattedDate.astro';
+import site from '@/config/site';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getPosts, getProjects } from '@/lib/content';
+
+const [posts, projects] = await Promise.all([getPosts(), getProjects()]);
+const featuredPosts = posts.filter(({ data }) => data.featured).slice(0, 3);
+const featuredProjects = projects
+  .filter(({ data }) => data.featured)
+  .slice(0, 3);
+---
+
+<BaseLayout>
+  <h1>{site.name}</h1>
+  <p>{site.description}</p>
+
+  <section aria-labelledby="featured-projects">
+    <h2 id="featured-projects">Selected projects</h2>
+    {
+      featuredProjects.length > 0 ? (
+        <ul>
+          {featuredProjects.map((project) => (
+            <li>
+              <article>
+                <h3>
+                  <a href={`/projects/${project.id}/`}>{project.data.title}</a>
+                </h3>
+                <p>{project.data.description}</p>
+                <p>{project.data.year}</p>
+              </article>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No featured projects yet.</p>
+      )
+    }
+    <p>
+      <a href="/projects/">All projects</a>
+    </p>
+  </section>
+
+  <section aria-labelledby="recent-posts">
+    <h2 id="recent-posts">Recent writing</h2>
+    {
+      featuredPosts.length > 0 ? (
+        <ul>
+          {featuredPosts.map((post) => (
+            <li>
+              <article>
+                <h3>
+                  <a href={`/posts/${post.id}/`}>{post.data.title}</a>
+                </h3>
+                <p>{post.data.description}</p>
+                <FormattedDate date={post.data.publishedAt} />
+              </article>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No featured posts yet.</p>
+      )
+    }
+    <p>
+      <a href="/posts/">All posts</a>
+    </p>
+  </section>
+</BaseLayout>

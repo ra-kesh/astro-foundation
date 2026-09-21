@@ -1,0 +1,29 @@
+---
+import { Picture } from 'astro:assets';
+
+export interface Props {
+  src: ImageMetadata;
+  alt: string;
+  widths?: number[];
+  sizes?: string;
+  loading?: 'eager' | 'lazy';
+}
+
+const {
+  src,
+  alt,
+  widths = [480, 768, 1200],
+  sizes = '(min-width: 768px) 768px, 100vw',
+  loading = 'lazy',
+} = Astro.props;
+---
+
+<Picture
+  src={src}
+  alt={alt}
+  widths={widths}
+  sizes={sizes}
+  formats={['avif', 'webp']}
+  loading={loading}
+  decoding="async"
+/>
